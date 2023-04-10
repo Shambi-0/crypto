@@ -2,14 +2,14 @@
 	"name": "@rbxts/crypto",
 	"version": "1.0.0",
 	"description": "An Open-Source Cryptography library for Roblox.",
-	"main": "lib/ts.lua",
-	"types": "lib/crypto.d.ts",
+	"main": "crypto/index.lua",
+	"types": "crypto/index.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Shambi-0/crypto.git"
 	},
 	"keywords": [ "Cryptography", "Typescript", "Lua", "@rbxts" ],
-	"author": "StyledDev",
+	"author": "Luc Rodriguez <luc.rodriguez@seemless.gg> (https://github.com/Shambi-0)",
 	"license": "ECL-2.0",
 	"bugs": {
 		"url": "https://github.com/Shambi-0/crypto/issues"
@@ -20,7 +20,7 @@
 		"@rbxts/types": "^1.0.654"
 	},
 	"files": [
-		"src/ts.lua",
-		"src/crypto.d.ts"
+		"crypto/index.lua",
+		"crypto/index.d.ts"
 	]
 }

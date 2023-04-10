@@ -1,0 +1,392 @@
+--[[::
+
+Copyright (C) 2022, Luc Rodriguez (Aliases : Shambi, StyledDev).
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--::]]
+
+-----------------------
+--// Initalization //--
+-----------------------
+
+local Module, Generator = {}, Random.new(tick())
+
+------------------
+--// Datasets //--
+------------------
+
+local GF8x2, GF8x3, GF8x9, GF8x11, GF8x13, GF8x14, SBox, InverseSBox, KeySchedule = unpack({
+	{[0]=
+
+		0X00, 0X02, 0X04, 0X06, 0X08, 0X0A, 0X0C, 0X0E, 0X10, 0X12, 0X14, 0X16, 0X18, 0X1A, 0X1C, 0X1E,
+		0X20, 0X22, 0X24, 0X26, 0X28, 0X2A, 0X2C, 0X2E, 0X30, 0X32, 0X34, 0X36, 0X38, 0X3A, 0X3C, 0X3E,
+		0X40, 0X42, 0X44, 0X46, 0X48, 0X4A, 0X4C, 0X4E, 0X50, 0X52, 0X54, 0X56, 0X58, 0X5A, 0X5C, 0X5E,
+		0X60, 0X62, 0X64, 0X66, 0X68, 0X6A, 0X6C, 0X6E, 0X70, 0X72, 0X74, 0X76, 0X78, 0X7A, 0X7C, 0X7E,
+		0X80, 0X82, 0X84, 0X86, 0X88, 0X8A, 0X8C, 0X8E, 0X90, 0X92, 0X94, 0X96, 0X98, 0X9A, 0X9C, 0X9E,
+		0XA0, 0XA2, 0XA4, 0XA6, 0XA8, 0XAA, 0XAC, 0XAE, 0XB0, 0XB2, 0XB4, 0XB6, 0XB8, 0XBA, 0XBC, 0XBE,
+		0XC0, 0XC2, 0XC4, 0XC6, 0XC8, 0XCA, 0XCC, 0XCE, 0XD0, 0XD2, 0XD4, 0XD6, 0XD8, 0XDA, 0XDC, 0XDE,
+		0XE0, 0XE2, 0XE4, 0XE6, 0XE8, 0XEA, 0XEC, 0XEE, 0XF0, 0XF2, 0XF4, 0XF6, 0XF8, 0XFA, 0XFC, 0XFE,
+		0X1B, 0X19, 0X1F, 0X1D, 0X13, 0X11, 0X17, 0X15, 0X0B, 0X09, 0X0F, 0X0D, 0X03, 0X01, 0X07, 0X05,
+		0X3B, 0X39, 0X3F, 0X3D, 0X33, 0X31, 0X37, 0X35, 0X2B, 0X29, 0X2F, 0X2D, 0X23, 0X21, 0X27, 0X25,
+		0X5B, 0X59, 0X5F, 0X5D, 0X53, 0X51, 0X57, 0X55, 0X4B, 0X49, 0X4F, 0X4D, 0X43, 0X41, 0X47, 0X45,
+		0X7B, 0X79, 0X7F, 0X7D, 0X73, 0X71, 0X77, 0X75, 0X6B, 0X69, 0X6F, 0X6D, 0X63, 0X61, 0X67, 0X65,
+		0X9B, 0X99, 0X9F, 0X9D, 0X93, 0X91, 0X97, 0X95, 0X8B, 0X89, 0X8F, 0X8D, 0X83, 0X81, 0X87, 0X85,
+		0XBB, 0XB9, 0XBF, 0XBD, 0XB3, 0XB1, 0XB7, 0XB5, 0XAB, 0XA9, 0XAF, 0XAD, 0XA3, 0XA1, 0XA7, 0XA5,
+		0XDB, 0XD9, 0XDF, 0XDD, 0XD3, 0XD1, 0XD7, 0XD5, 0XCB, 0XC9, 0XCF, 0XCD, 0XC3, 0XC1, 0XC7, 0XC5,
+		0XFB, 0XF9, 0XFF, 0XFD, 0XF3, 0XF1, 0XF7, 0XF5, 0XEB, 0XE9, 0XEF, 0XED, 0XE3, 0XE1, 0XE7, 0XE5
+
+	}, {[0]=
+
+		0X00, 0X03, 0X06, 0X05, 0X0C, 0X0F, 0X0A, 0X09, 0X18, 0X1B, 0X1E, 0X1D, 0X14, 0X17, 0X12, 0X11,
+		0X30, 0X33, 0X36, 0X35, 0X3C, 0X3F, 0X3A, 0X39, 0X28, 0X2B, 0X2E, 0X2D, 0X24, 0X27, 0X22, 0X21,
+		0X60, 0X63, 0X66, 0X65, 0X6C, 0X6F, 0X6A, 0X69, 0X78, 0X7B, 0X7E, 0X7D, 0X74, 0X77, 0X72, 0X71,
+		0X50, 0X53, 0X56, 0X55, 0X5C, 0X5F, 0X5A, 0X59, 0X48, 0X4B, 0X4E, 0X4D, 0X44, 0X47, 0X42, 0X41,
+		0XC0, 0XC3, 0XC6, 0XC5, 0XCC, 0XCF, 0XCA, 0XC9, 0XD8, 0XDB, 0XDE, 0XDD, 0XD4, 0XD7, 0XD2, 0XD1,
+		0XF0, 0XF3, 0XF6, 0XF5, 0XFC, 0XFF, 0XFA, 0XF9, 0XE8, 0XEB, 0XEE, 0XED, 0XE4, 0XE7, 0XE2, 0XE1,
+		0XA0, 0XA3, 0XA6, 0XA5, 0XAC, 0XAF, 0XAA, 0XA9, 0XB8, 0XBB, 0XBE, 0XBD, 0XB4, 0XB7, 0XB2, 0XB1,
+		0X90, 0X93, 0X96, 0X95, 0X9C, 0X9F, 0X9A, 0X99, 0X88, 0X8B, 0X8E, 0X8D, 0X84, 0X87, 0X82, 0X81,
+		0X9B, 0X98, 0X9D, 0X9E, 0X97, 0X94, 0X91, 0X92, 0X83, 0X80, 0X85, 0X86, 0X8F, 0X8C, 0X89, 0X8A,
+		0XAB, 0XA8, 0XAD, 0XAE, 0XA7, 0XA4, 0XA1, 0XA2, 0XB3, 0XB0, 0XB5, 0XB6, 0XBF, 0XBC, 0XB9, 0XBA,
+		0XFB, 0XF8, 0XFD, 0XFE, 0XF7, 0XF4, 0XF1, 0XF2, 0XE3, 0XE0, 0XE5, 0XE6, 0XEF, 0XEC, 0XE9, 0XEA,
+		0XCB, 0XC8, 0XCD, 0XCE, 0XC7, 0XC4, 0XC1, 0XC2, 0XD3, 0XD0, 0XD5, 0XD6, 0XDF, 0XDC, 0XD9, 0XDA,
+		0X5B, 0X58, 0X5D, 0X5E, 0X57, 0X54, 0X51, 0X52, 0X43, 0X40, 0X45, 0X46, 0X4F, 0X4C, 0X49, 0X4A,
+		0X6B, 0X68, 0X6D, 0X6E, 0X67, 0X64, 0X61, 0X62, 0X73, 0X70, 0X75, 0X76, 0X7F, 0X7C, 0X79, 0X7A,
+		0X3B, 0X38, 0X3D, 0X3E, 0X37, 0X34, 0X31, 0X32, 0X23, 0X20, 0X25, 0X26, 0X2F, 0X2C, 0X29, 0X2A,
+		0X0B, 0X08, 0X0D, 0X0E, 0X07, 0X04, 0X01, 0X02, 0X13, 0X10, 0X15, 0X16, 0X1F, 0X1C, 0X19, 0X1A
+
+	}, {[0]=
+
+		0X00, 0X09, 0X12, 0X1B, 0X24, 0X2D, 0X36, 0X3F, 0X48, 0X41, 0X5A, 0X53, 0X6C, 0X65, 0X7E, 0X77,
+		0X90, 0X99, 0X82, 0X8B, 0XB4, 0XBD, 0XA6, 0XAF, 0XD8, 0XD1, 0XCA, 0XC3, 0XFC, 0XF5, 0XEE, 0XE7,
+		0X3B, 0X32, 0X29, 0X20, 0X1F, 0X16, 0X0D, 0X04, 0X73, 0X7A, 0X61, 0X68, 0X57, 0X5E, 0X45, 0X4C,
+		0XAB, 0XA2, 0XB9, 0XB0, 0X8F, 0X86, 0X9D, 0X94, 0XE3, 0XEA, 0XF1, 0XF8, 0XC7, 0XCE, 0XD5, 0XDC,
+		0X76, 0X7F, 0X64, 0X6D, 0X52, 0X5B, 0X40, 0X49, 0X3E, 0X37, 0X2C, 0X25, 0X1A, 0X13, 0X08, 0X01,
+		0XE6, 0XEF, 0XF4, 0XFD, 0XC2, 0XCB, 0XD0, 0XD9, 0XAE, 0XA7, 0XBC, 0XB5, 0X8A, 0X83, 0X98, 0X91,
+		0X4D, 0X44, 0X5F, 0X56, 0X69, 0X60, 0X7B, 0X72, 0X05, 0X0C, 0X17, 0X1E, 0X21, 0X28, 0X33, 0X3A,
+		0XDD, 0XD4, 0XCF, 0XC6, 0XF9, 0XF0, 0XEB, 0XE2, 0X95, 0X9C, 0X87, 0X8E, 0XB1, 0XB8, 0XA3, 0XAA,
+		0XEC, 0XE5, 0XFE, 0XF7, 0XC8, 0XC1, 0XDA, 0XD3, 0XA4, 0XAD, 0XB6, 0XBF, 0X80, 0X89, 0X92, 0X9B,
+		0X7C, 0X75, 0X6E, 0X67, 0X58, 0X51, 0X4A, 0X43, 0X34, 0X3D, 0X26, 0X2F, 0X10, 0X19, 0X02, 0X0B,
+		0XD7, 0XDE, 0XC5, 0XCC, 0XF3, 0XFA, 0XE1, 0XE8, 0X9F, 0X96, 0X8D, 0X84, 0XBB, 0XB2, 0XA9, 0XA0,
+		0X47, 0X4E, 0X55, 0X5C, 0X63, 0X6A, 0X71, 0X78, 0X0F, 0X06, 0X1D, 0X14, 0X2B, 0X22, 0X39, 0X30,
+		0X9A, 0X93, 0X88, 0X81, 0XBE, 0XB7, 0XAC, 0XA5, 0XD2, 0XDB, 0XC0, 0XC9, 0XF6, 0XFF, 0XE4, 0XED,
+		0X0A, 0X03, 0X18, 0X11, 0X2E, 0X27, 0X3C, 0X35, 0X42, 0X4B, 0X50, 0X59, 0X66, 0X6F, 0X74, 0X7D,
+		0XA1, 0XA8, 0XB3, 0XBA, 0X85, 0X8C, 0X97, 0X9E, 0XE9, 0XE0, 0XFB, 0XF2, 0XCD, 0XC4, 0XDF, 0XD6,
+		0X31, 0X38, 0X23, 0X2A, 0X15, 0X1C, 0X07, 0X0E, 0X79, 0X70, 0X6B, 0X62, 0X5D, 0X54, 0X4F, 0X46
+
+	}, {[0]=
+
+		0X00, 0X0B, 0X16, 0X1D, 0X2C, 0X27, 0X3A, 0X31, 0X58, 0X53, 0X4E, 0X45, 0X74, 0X7F, 0X62, 0X69,
+		0XB0, 0XBB, 0XA6, 0XAD, 0X9C, 0X97, 0X8A, 0X81, 0XE8, 0XE3, 0XFE, 0XF5, 0XC4, 0XCF, 0XD2, 0XD9,
+		0X7B, 0X70, 0X6D, 0X66, 0X57, 0X5C, 0X41, 0X4A, 0X23, 0X28, 0X35, 0X3E, 0X0F, 0X04, 0X19, 0X12,
+		0XCB, 0XC0, 0XDD, 0XD6, 0XE7, 0XEC, 0XF1, 0XFA, 0X93, 0X98, 0X85, 0X8E, 0XBF, 0XB4, 0XA9, 0XA2,
+		0XF6, 0XFD, 0XE0, 0XEB, 0XDA, 0XD1, 0XCC, 0XC7, 0XAE, 0XA5, 0XB8, 0XB3, 0X82, 0X89, 0X94, 0X9F,
+		0X46, 0X4D, 0X50, 0X5B, 0X6A, 0X61, 0X7C, 0X77, 0X1E, 0X15, 0X08, 0X03, 0X32, 0X39, 0X24, 0X2F,
+		0X8D, 0X86, 0X9B, 0X90, 0XA1, 0XAA, 0XB7, 0XBC, 0XD5, 0XDE, 0XC3, 0XC8, 0XF9, 0XF2, 0XEF, 0XE4,
+		0X3D, 0X36, 0X2B, 0X20, 0X11, 0X1A, 0X07, 0X0C, 0X65, 0X6E, 0X73, 0X78, 0X49, 0X42, 0X5F, 0X54,
+		0XF7, 0XFC, 0XE1, 0XEA, 0XDB, 0XD0, 0XCD, 0XC6, 0XAF, 0XA4, 0XB9, 0XB2, 0X83, 0X88, 0X95, 0X9E,
+		0X47, 0X4C, 0X51, 0X5A, 0X6B, 0X60, 0X7D, 0X76, 0X1F, 0X14, 0X09, 0X02, 0X33, 0X38, 0X25, 0X2E,
+		0X8C, 0X87, 0X9A, 0X91, 0XA0, 0XAB, 0XB6, 0XBD, 0XD4, 0XDF, 0XC2, 0XC9, 0XF8, 0XF3, 0XEE, 0XE5,
+		0X3C, 0X37, 0X2A, 0X21, 0X10, 0X1B, 0X06, 0X0D, 0X64, 0X6F, 0X72, 0X79, 0X48, 0X43, 0X5E, 0X55,
+		0X01, 0X0A, 0X17, 0X1C, 0X2D, 0X26, 0X3B, 0X30, 0X59, 0X52, 0X4F, 0X44, 0X75, 0X7E, 0X63, 0X68,
+		0XB1, 0XBA, 0XA7, 0XAC, 0X9D, 0X96, 0X8B, 0X80, 0XE9, 0XE2, 0XFF, 0XF4, 0XC5, 0XCE, 0XD3, 0XD8,
+		0X7A, 0X71, 0X6C, 0X67, 0X56, 0X5D, 0X40, 0X4B, 0X22, 0X29, 0X34, 0X3F, 0X0E, 0X05, 0X18, 0X13,
+		0XCA, 0XC1, 0XDC, 0XD7, 0XE6, 0XED, 0XF0, 0XFB, 0X92, 0X99, 0X84, 0X8F, 0XBE, 0XB5, 0XA8, 0XA3
+
+	}, {[0]=
+
+		0X00, 0X0D, 0X1A, 0X17, 0X34, 0X39, 0X2E, 0X23, 0X68, 0X65, 0X72, 0X7F, 0X5C, 0X51, 0X46, 0X4B,
+		0XD0, 0XDD, 0XCA, 0XC7, 0XE4, 0XE9, 0XFE, 0XF3, 0XB8, 0XB5, 0XA2, 0XAF, 0X8C, 0X81, 0X96, 0X9B,
+		0XBB, 0XB6, 0XA1, 0XAC, 0X8F, 0X82, 0X95, 0X98, 0XD3, 0XDE, 0XC9, 0XC4, 0XE7, 0XEA, 0XFD, 0XF0,
+		0X6B, 0X66, 0X71, 0X7C, 0X5F, 0X52, 0X45, 0X48, 0X03, 0X0E, 0X19, 0X14, 0X37, 0X3A, 0X2D, 0X20,
+		0X6D, 0X60, 0X77, 0X7A, 0X59, 0X54, 0X43, 0X4E, 0X05, 0X08, 0X1F, 0X12, 0X31, 0X3C, 0X2B, 0X26,
+		0XBD, 0XB0, 0XA7, 0XAA, 0X89, 0X84, 0X93, 0X9E, 0XD5, 0XD8, 0XCF, 0XC2, 0XE1, 0XEC, 0XFB, 0XF6,
+		0XD6, 0XDB, 0XCC, 0XC1, 0XE2, 0XEF, 0XF8, 0XF5, 0XBE, 0XB3, 0XA4, 0XA9, 0X8A, 0X87, 0X90, 0X9D,
+		0X06, 0X0B, 0X1C, 0X11, 0X32, 0X3F, 0X28, 0X25, 0X6E, 0X63, 0X74, 0X79, 0X5A, 0X57, 0X40, 0X4D,
+		0XDA, 0XD7, 0XC0, 0XCD, 0XEE, 0XE3, 0XF4, 0XF9, 0XB2, 0XBF, 0XA8, 0XA5, 0X86, 0X8B, 0X9C, 0X91,
+		0X0A, 0X07, 0X10, 0X1D, 0X3E, 0X33, 0X24, 0X29, 0X62, 0X6F, 0X78, 0X75, 0X56, 0X5B, 0X4C, 0X41,
+		0X61, 0X6C, 0X7B, 0X76, 0X55, 0X58, 0X4F, 0X42, 0X09, 0X04, 0X13, 0X1E, 0X3D, 0X30, 0X27, 0X2A,
+		0XB1, 0XBC, 0XAB, 0XA6, 0X85, 0X88, 0X9F, 0X92, 0XD9, 0XD4, 0XC3, 0XCE, 0XED, 0XE0, 0XF7, 0XFA,
+		0XB7, 0XBA, 0XAD, 0XA0, 0X83, 0X8E, 0X99, 0X94, 0XDF, 0XD2, 0XC5, 0XC8, 0XEB, 0XE6, 0XF1, 0XFC,
+		0X67, 0X6A, 0X7D, 0X70, 0X53, 0X5E, 0X49, 0X44, 0X0F, 0X02, 0X15, 0X18, 0X3B, 0X36, 0X21, 0X2C,
+		0X0C, 0X01, 0X16, 0X1B, 0X38, 0X35, 0X22, 0X2F, 0X64, 0X69, 0X7E, 0X73, 0X50, 0X5D, 0X4A, 0X47,
+		0XDC, 0XD1, 0XC6, 0XCB, 0XE8, 0XE5, 0XF2, 0XFF, 0XB4, 0XB9, 0XAE, 0XA3, 0X80, 0X8D, 0X9A, 0X97
+
+	}, {[0]=
+
+		0X00, 0X0E, 0X1C, 0X12, 0X38, 0X36, 0X24, 0X2A, 0X70, 0X7E, 0X6C, 0X62, 0X48, 0X46, 0X54, 0X5A,
+		0XE0, 0XEE, 0XFC, 0XF2, 0XD8, 0XD6, 0XC4, 0XCA, 0X90, 0X9E, 0X8C, 0X82, 0XA8, 0XA6, 0XB4, 0XBA,
+		0XDB, 0XD5, 0XC7, 0XC9, 0XE3, 0XED, 0XFF, 0XF1, 0XAB, 0XA5, 0XB7, 0XB9, 0X93, 0X9D, 0X8F, 0X81,
+		0X3B, 0X35, 0X27, 0X29, 0X03, 0X0D, 0X1F, 0X11, 0X4B, 0X45, 0X57, 0X59, 0X73, 0X7D, 0X6F, 0X61,
+		0XAD, 0XA3, 0XB1, 0XBF, 0X95, 0X9B, 0X89, 0X87, 0XDD, 0XD3, 0XC1, 0XCF, 0XE5, 0XEB, 0XF9, 0XF7,
+		0X4D, 0X43, 0X51, 0X5F, 0X75, 0X7B, 0X69, 0X67, 0X3D, 0X33, 0X21, 0X2F, 0X05, 0X0B, 0X19, 0X17,
+		0X76, 0X78, 0X6A, 0X64, 0X4E, 0X40, 0X52, 0X5C, 0X06, 0X08, 0X1A, 0X14, 0X3E, 0X30, 0X22, 0X2C,
+		0X96, 0X98, 0X8A, 0X84, 0XAE, 0XA0, 0XB2, 0XBC, 0XE6, 0XE8, 0XFA, 0XF4, 0XDE, 0XD0, 0XC2, 0XCC,
+		0X41, 0X4F, 0X5D, 0X53, 0X79, 0X77, 0X65, 0X6B, 0X31, 0X3F, 0X2D, 0X23, 0X09, 0X07, 0X15, 0X1B,
+		0XA1, 0XAF, 0XBD, 0XB3, 0X99, 0X97, 0X85, 0X8B, 0XD1, 0XDF, 0XCD, 0XC3, 0XE9, 0XE7, 0XF5, 0XFB,
+		0X9A, 0X94, 0X86, 0X88, 0XA2, 0XAC, 0XBE, 0XB0, 0XEA, 0XE4, 0XF6, 0XF8, 0XD2, 0XDC, 0XCE, 0XC0,
+		0X7A, 0X74, 0X66, 0X68, 0X42, 0X4C, 0X5E, 0X50, 0X0A, 0X04, 0X16, 0X18, 0X32, 0X3C, 0X2E, 0X20,
+		0XEC, 0XE2, 0XF0, 0XFE, 0XD4, 0XDA, 0XC8, 0XC6, 0X9C, 0X92, 0X80, 0X8E, 0XA4, 0XAA, 0XB8, 0XB6,
+		0X0C, 0X02, 0X10, 0X1E, 0X34, 0X3A, 0X28, 0X26, 0X7C, 0X72, 0X60, 0X6E, 0X44, 0X4A, 0X58, 0X56,
+		0X37, 0X39, 0X2B, 0X25, 0X0F, 0X01, 0X13, 0X1D, 0X47, 0X49, 0X5B, 0X55, 0X7F, 0X71, 0X63, 0X6D,
+		0XD7, 0XD9, 0XCB, 0XC5, 0XEF, 0XE1, 0XF3, 0XFD, 0XA7, 0XA9, 0XBB, 0XB5, 0X9F, 0X91, 0X83, 0X8D
+
+	}, {[0]=
+
+		0X63, 0X7C, 0X77, 0X7B, 0XF2, 0X6B, 0X6F, 0XC5, 0X30, 0X01, 0X67, 0X2B, 0XFE, 0XD7, 0XAB, 0X76,
+		0XCA, 0X82, 0XC9, 0X7D, 0XFA, 0X59, 0X47, 0XF0, 0XAD, 0XD4, 0XA2, 0XAF, 0X9C, 0XA4, 0X72, 0XC0,
+		0XB7, 0XFD, 0X93, 0X26, 0X36, 0X3F, 0XF7, 0XCC, 0X34, 0XA5, 0XE5, 0XF1, 0X71, 0XD8, 0X31, 0X15,
+		0X04, 0XC7, 0X23, 0XC3, 0X18, 0X96, 0X05, 0X9A, 0X07, 0X12, 0X80, 0XE2, 0XEB, 0X27, 0XB2, 0X75,
+		0X09, 0X83, 0X2C, 0X1A, 0X1B, 0X6E, 0X5A, 0XA0, 0X52, 0X3B, 0XD6, 0XB3, 0X29, 0XE3, 0X2F, 0X84,
+		0X53, 0XD1, 0X00, 0XED, 0X20, 0XFC, 0XB1, 0X5B, 0X6A, 0XCB, 0XBE, 0X39, 0X4A, 0X4C, 0X58, 0XCF,
+		0XD0, 0XEF, 0XAA, 0XFB, 0X43, 0X4D, 0X33, 0X85, 0X45, 0XF9, 0X02, 0X7F, 0X50, 0X3C, 0X9F, 0XA8,
+		0X51, 0XA3, 0X40, 0X8F, 0X92, 0X9D, 0X38, 0XF5, 0XBC, 0XB6, 0XDA, 0X21, 0X10, 0XFF, 0XF3, 0XD2,
+		0XCD, 0X0C, 0X13, 0XEC, 0X5F, 0X97, 0X44, 0X17, 0XC4, 0XA7, 0X7E, 0X3D, 0X64, 0X5D, 0X19, 0X73,
+		0X60, 0X81, 0X4F, 0XDC, 0X22, 0X2A, 0X90, 0X88, 0X46, 0XEE, 0XB8, 0X14, 0XDE, 0X5E, 0X0B, 0XDB,
+		0XE0, 0X32, 0X3A, 0X0A, 0X49, 0X06, 0X24, 0X5C, 0XC2, 0XD3, 0XAC, 0X62, 0X91, 0X95, 0XE4, 0X79,
+		0XE7, 0XC8, 0X37, 0X6D, 0X8D, 0XD5, 0X4E, 0XA9, 0X6C, 0X56, 0XF4, 0XEA, 0X65, 0X7A, 0XAE, 0X08,
+		0XBA, 0X78, 0X25, 0X2E, 0X1C, 0XA6, 0XB4, 0XC6, 0XE8, 0XDD, 0X74, 0X1F, 0X4B, 0XBD, 0X8B, 0X8A,
+		0X70, 0X3E, 0XB5, 0X66, 0X48, 0X03, 0XF6, 0X0E, 0X61, 0X35, 0X57, 0XB9, 0X86, 0XC1, 0X1D, 0X9E,
+		0XE1, 0XF8, 0X98, 0X11, 0X69, 0XD9, 0X8E, 0X94, 0X9B, 0X1E, 0X87, 0XE9, 0XCE, 0X55, 0X28, 0XDF,
+		0X8C, 0XA1, 0X89, 0X0D, 0XBF, 0XE6, 0X42, 0X68, 0X41, 0X99, 0X2D, 0X0F, 0XB0, 0X54, 0XBB, 0X16
+
+	}, {[0]=
+
+		0X52, 0X09, 0X6A, 0XD5, 0X30, 0X36, 0XA5, 0X38, 0XBF, 0X40, 0XA3, 0X9E, 0X81, 0XF3, 0XD7, 0XFB,
+		0X7C, 0XE3, 0X39, 0X82, 0X9B, 0X2F, 0XFF, 0X87, 0X34, 0X8E, 0X43, 0X44, 0XC4, 0XDE, 0XE9, 0XCB,
+		0X54, 0X7B, 0X94, 0X32, 0XA6, 0XC2, 0X23, 0X3D, 0XEE, 0X4C, 0X95, 0X0B, 0X42, 0XFA, 0XC3, 0X4E,
+		0X08, 0X2E, 0XA1, 0X66, 0X28, 0XD9, 0X24, 0XB2, 0X76, 0X5B, 0XA2, 0X49, 0X6D, 0X8B, 0XD1, 0X25,
+		0X72, 0XF8, 0XF6, 0X64, 0X86, 0X68, 0X98, 0X16, 0XD4, 0XA4, 0X5C, 0XCC, 0X5D, 0X65, 0XB6, 0X92,
+		0X6C, 0X70, 0X48, 0X50, 0XFD, 0XED, 0XB9, 0XDA, 0X5E, 0X15, 0X46, 0X57, 0XA7, 0X8D, 0X9D, 0X84,
+		0X90, 0XD8, 0XAB, 0X00, 0X8C, 0XBC, 0XD3, 0X0A, 0XF7, 0XE4, 0X58, 0X05, 0XB8, 0XB3, 0X45, 0X06,
+		0XD0, 0X2C, 0X1E, 0X8F, 0XCA, 0X3F, 0X0F, 0X02, 0XC1, 0XAF, 0XBD, 0X03, 0X01, 0X13, 0X8A, 0X6B,
+		0X3A, 0X91, 0X11, 0X41, 0X4F, 0X67, 0XDC, 0XEA, 0X97, 0XF2, 0XCF, 0XCE, 0XF0, 0XB4, 0XE6, 0X73,
+		0X96, 0XAC, 0X74, 0X22, 0XE7, 0XAD, 0X35, 0X85, 0XE2, 0XF9, 0X37, 0XE8, 0X1C, 0X75, 0XDF, 0X6E,
+		0X47, 0XF1, 0X1A, 0X71, 0X1D, 0X29, 0XC5, 0X89, 0X6F, 0XB7, 0X62, 0X0E, 0XAA, 0X18, 0XBE, 0X1B,
+		0XFC, 0X56, 0X3E, 0X4B, 0XC6, 0XD2, 0X79, 0X20, 0X9A, 0XDB, 0XC0, 0XFE, 0X78, 0XCD, 0X5A, 0XF4,
+		0X1F, 0XDD, 0XA8, 0X33, 0X88, 0X07, 0XC7, 0X31, 0XB1, 0X12, 0X10, 0X59, 0X27, 0X80, 0XEC, 0X5F,
+		0X60, 0X51, 0X7F, 0XA9, 0X19, 0XB5, 0X4A, 0X0D, 0X2D, 0XE5, 0X7A, 0X9F, 0X93, 0XC9, 0X9C, 0XEF,
+		0XA0, 0XE0, 0X3B, 0X4D, 0XAE, 0X2A, 0XF5, 0XB0, 0XC8, 0XEB, 0XBB, 0X3C, 0X83, 0X53, 0X99, 0X61,
+		0X17, 0X2B, 0X04, 0X7E, 0XBA, 0X77, 0XD6, 0X26, 0XE1, 0X69, 0X14, 0X63, 0X55, 0X21, 0X0C, 0X7D
+
+	}, {
+
+		0X8D, 0X01, 0X02, 0X04, 0X08, 0X10, 0X20, 0X40, 0X80, 0X1B, 0X36, 0X6C, 0XD8, 0XAB, 0X4D, 0X9A,
+		0X2F, 0X5E, 0XBC, 0X63, 0XC6, 0X97, 0X35, 0X6A, 0XD4, 0XB3, 0X7D, 0XFA, 0XEF, 0XC5, 0X91, 0X39,
+		0X72, 0XE4, 0XD3, 0XBD, 0X61, 0XC2, 0X9F, 0X25, 0X4A, 0X94, 0X33, 0X66, 0XCC, 0X83, 0X1D, 0X3A,
+		0X74, 0XE8, 0XCB, 0X8D, 0X01, 0X02, 0X04, 0X08, 0X10, 0X20, 0X40, 0X80, 0X1B, 0X36, 0X6C, 0XD8,
+		0XAB, 0X4D, 0X9A, 0X2F, 0X5E, 0XBC, 0X63, 0XC6, 0X97, 0X35, 0X6A, 0XD4, 0XB3, 0X7D, 0XFA, 0XEF,
+		0XC5, 0X91, 0X39, 0X72, 0XE4, 0XD3, 0XBD, 0X61, 0XC2, 0X9F, 0X25, 0X4A, 0X94, 0X33, 0X66, 0XCC,
+		0X83, 0X1D, 0X3A, 0X74, 0XE8, 0XCB, 0X8D, 0X01, 0X02, 0X04, 0X08, 0X10, 0X20, 0X40, 0X80, 0X1B,
+		0X36, 0X6C, 0XD8, 0XAB, 0X4D, 0X9A, 0X2F, 0X5E, 0XBC, 0X63, 0XC6, 0X97, 0X35, 0X6A, 0XD4, 0XB3,
+		0X7D, 0XFA, 0XEF, 0XC5, 0X91, 0X39, 0X72, 0XE4, 0XD3, 0XBD, 0X61, 0XC2, 0X9F, 0X25, 0X4A, 0X94,
+		0X33, 0X66, 0XCC, 0X83, 0X1D, 0X3A, 0X74, 0XE8, 0XCB, 0X8D, 0X01, 0X02, 0X04, 0X08, 0X10, 0X20,
+		0X40, 0X80, 0X1B, 0X36, 0X6C, 0XD8, 0XAB, 0X4D, 0X9A, 0X2F, 0X5E, 0XBC, 0X63, 0XC6, 0X97, 0X35,
+		0X6A, 0XD4, 0XB3, 0X7D, 0XFA, 0XEF, 0XC5, 0X91, 0X39, 0X72, 0XE4, 0XD3, 0XBD, 0X61, 0XC2, 0X9F,
+		0X25, 0X4A, 0X94, 0X33, 0X66, 0XCC, 0X83, 0X1D, 0X3A, 0X74, 0XE8, 0XCB, 0X8D, 0X01, 0X02, 0X04,
+		0X08, 0X10, 0X20, 0X40, 0X80, 0X1B, 0X36, 0X6C, 0XD8, 0XAB, 0X4D, 0X9A, 0X2F, 0X5E, 0XBC, 0X63,
+		0XC6, 0X97, 0X35, 0X6A, 0XD4, 0XB3, 0X7D, 0XFA, 0XEF, 0XC5, 0X91, 0X39, 0X72, 0XE4, 0XD3, 0XBD,
+		0X61, 0XC2, 0X9F, 0X25, 0X4A, 0X94, 0X33, 0X66, 0XCC, 0X83, 0X1D, 0X3A, 0X74, 0XE8, 0XCB, 0X8D
+
+	}
+})
+
+-----------------------------
+--// Arthmetic Functions //--
+-----------------------------
+
+local function AddRoundKey(State, Key)
+	for Index, Byte in State do
+		State[Index] = bit32.bxor(Byte, Key[Index])
+	end
+end
+
+local function SubstituteBytes(State, S_Box)
+	for Index, Byte in State do
+		State[Index] = S_Box[Byte]
+	end
+end
+
+local function ShiftRows(State)
+	State[5], State[6], State[7], State[8] = State[6], State[7], State[8], State[5] -- Shift DOWN by 1.
+	State[9], State[10], State[11], State[12] = State[11], State[12], State[9], State[10] -- Shift DOWN by 2.
+	State[13], State[14], State[15], State[16] = State[16], State[13], State[14], State[15] -- Shift DOWN by 3.
+end
+
+local function InverseShiftRows(State)
+	State[6], State[7], State[8], State[5] = State[5], State[6], State[7], State[8] -- Shift UP by 1.
+	State[11], State[12], State[9], State[10] = State[9], State[10], State[11], State[12] -- Shift UP by 2.
+	State[16], State[13], State[14], State[15] = State[13], State[14], State[15], State[16] -- Shift UP by 3.
+end
+
+local function MixColumns(State)
+	for Current = 1, 4 do
+		local FirstIndex, SecondIndex, ThirdIndex = Current + 4, Current + 8, Current + 12
+
+		local First, Second = State[Current], State[FirstIndex]
+		local Third, Fourth = State[SecondIndex], State[ThirdIndex]
+
+		State[Current] = bit32.bxor(bit32.bxor(bit32.bxor(GF8x2[First], GF8x3[Second]), Third), Fourth)
+		State[FirstIndex] = bit32.bxor(bit32.bxor(bit32.bxor(First, GF8x2[Second]), GF8x3[Third]), Fourth)
+		State[SecondIndex] = bit32.bxor(bit32.bxor(bit32.bxor(First, Second), GF8x2[Third]), GF8x3[Fourth])
+		State[ThirdIndex] = bit32.bxor(bit32.bxor(bit32.bxor(GF8x3[First], Second), Third), GF8x2[Fourth])
+	end
+end
+
+-------------------
+--// Functions //--
+-------------------
+
+local function ElectronicCodebook(Method, Key, OriginalText)
+	local Expanded, RoundKeys, Text = {}, {}, ""
+
+	for Count = 0, 32 do
+		local Byte = Key % 256
+
+		Expanded[Count] = Byte
+		Key = (Key - Byte) * 0.00390625
+	end
+
+	local Index, Count = 1, 32
+
+	local First, Second = Expanded[1], Expanded[2]
+	local Third, Fourth = Expanded[3], Expanded[4]
+
+	while Count < 240 do
+		First, Second, Third, Fourth = bit32.bxor(KeySchedule[Index], SBox[Second]), SBox[Third], SBox[Fourth], SBox[First]
+		Index += 1
+
+		for Index = 1, 8 do
+			if Index == 5 then
+				First, Second, Third, Fourth = SBox[First], SBox[Second], SBox[Third], SBox[Fourth]
+			end
+
+			Count += 1
+			First = bit32.bxor(First, Expanded[Count - 32])
+			Expanded[Count] = First
+
+			Count += 1
+			Second = bit32.bxor(Second, Expanded[Count - 32])
+			Expanded[Count] = Second
+
+			Count += 1
+			Third = bit32.bxor(Third, Expanded[Count - 32])
+			Expanded[Count] = Third
+
+			Count += 1
+			Fourth = bit32.bxor(Fourth, Expanded[Count - 32])
+			Expanded[Count] = Fourth
+		end
+	end
+
+	for Round = 0, 14 do
+		local RoundKey = {}
+
+		for Byte = 1, 16 do
+			RoundKey[Byte] = Expanded[Round * 16 + Byte]
+		end
+
+		RoundKeys[Round] = RoundKey
+	end
+
+	for Chunk, State in function(Text, PrimaryIndex)
+			local First = PrimaryIndex * 16 + 1
+
+			if First > #Text then
+				return
+			end
+
+			PrimaryIndex += 1
+			local Chunk = { string.byte(Text, First, First + 15) }
+
+			for SecondaryIndex = #Chunk + 1, 16 do
+				Chunk[SecondaryIndex] = 0
+			end
+
+			return PrimaryIndex, Chunk
+	end, OriginalText, 0 do
+
+		Method(State, RoundKeys)
+		Text ..= string.char(unpack(State))
+	end
+
+	return Text
+end
+
+-----------------
+--// Methods //--
+-----------------
+
+function Module:GenerateKey() : string
+	return string.gsub(string.rep("\0", 64), ".", function()
+		return string.format("%02x", Generator:NextInteger(0, 255))
+	end)
+end
+
+function Module:Encrypt(Data : string, Key : string) : string
+	return ElectronicCodebook(function(State, RoundKeys)
+		AddRoundKey(State, RoundKeys[0])
+
+		for Round = 1, 13 do
+			SubstituteBytes(State, SBox)
+			ShiftRows(State)
+			MixColumns(State)
+			AddRoundKey(State, RoundKeys[Round])
+		end
+
+		SubstituteBytes(State, SBox)
+		ShiftRows(State)
+		AddRoundKey(State, RoundKeys[14])
+
+	end, tonumber(Key, 16), Data)
+end
+
+function Module:Decrypt(Data : string, Key : string) : string
+	return ElectronicCodebook(function(State, RoundKeys)
+
+		AddRoundKey(State, RoundKeys[14])
+		InverseShiftRows(State)
+		SubstituteBytes(State, InverseSBox)
+
+		for Round = 13, 1, -1 do
+			AddRoundKey(State, RoundKeys[Round])
+
+			for Current = 1, 4 do
+				local FirstIndex, SecondIndex, ThirdIndex = Current + 4, Current + 8, Current + 12
+				local First, Second, Third, Fourth = State[Current], State[FirstIndex], State[SecondIndex], State[ThirdIndex]
+
+				State[Current] = bit32.bxor(bit32.bxor(bit32.bxor(GF8x14[First], GF8x11[Second]), GF8x13[Third]), GF8x9[Fourth])
+				State[FirstIndex] = bit32.bxor(bit32.bxor(bit32.bxor(GF8x9[First],  GF8x14[Second]), GF8x11[Third]), GF8x13[Fourth])
+				State[SecondIndex] = bit32.bxor(bit32.bxor(bit32.bxor(GF8x13[First], GF8x9[Second]),  GF8x14[Third]), GF8x11[Fourth])
+				State[ThirdIndex] = bit32.bxor(bit32.bxor(bit32.bxor(GF8x11[First], GF8x13[Second]), GF8x9[Third]),  GF8x14[Fourth])
+			end
+
+			InverseShiftRows(State)
+			SubstituteBytes(State, InverseSBox)
+		end
+
+		AddRoundKey(State, RoundKeys[0])
+	end, tonumber(Key, 16), Data)
+end
+
+----------------------
+--// Finalization //--
+----------------------
+
+return Module
