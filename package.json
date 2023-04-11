@@ -1,5 +1,5 @@
 {
-  "name": "@rbxts/cryptography",
+  "name": "@rbxts/crypto",
   "version": "1.0.0",
   "description": "[![ECL-2.0 License](https://img.shields.io/npm/l/@rbxts/crypto?label=License)](https://choosealicense.com/licenses/ecl-2.0/)",
   "main": "out/index.lua",
@@ -41,7 +41,8 @@
     "!**/*.tsbuildinfo"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "@rbxts:registry": "https://npm.pkg.github.com"
   },
   "bugs": {
     "url": "https://github.com/Shambi-0/crypto/issues"
