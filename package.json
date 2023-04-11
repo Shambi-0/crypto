@@ -9,6 +9,7 @@
     "url": "git+https://github.com/Shambi-0/crypto.git"
   },
   "devDependencies": {
+    "np": "*",
     "@rbxts/compiler-types": "^2.1.0-types.1",
     "@rbxts/types": "^1.0.675",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
@@ -23,6 +24,7 @@
   "scripts": {
     "build": "rbxtsc",
     "watch": "rbxtsc -w",
+    "release": "np",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\""
   },
