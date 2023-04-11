@@ -1,13 +1,29 @@
 {
   "name": "@rbxts/crypto",
   "version": "1.0.1",
-  "private": true,
-  "description": "An Open-Source Cryptography library for Roblox.",
-  "main": "crypto/index.lua",
-  "types": "crypto/index.d.ts",
+  "description": "[![ECL-2.0 License](https://img.shields.io/npm/l/@rbxts/crypto?label=License)](https://choosealicense.com/licenses/ecl-2.0/)",
+  "main": "out/index.lua",
+  "homepage": "https://github.com/Shambi-0/crypto#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Shambi-0/crypto.git"
+  },
+  "devDependencies": {
+    "@rbxts/compiler-types": "^2.1.0-types.1",
+    "@rbxts/types": "^1.0.675",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-roblox-ts": "^0.0.35",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.4"
+  },
+  "scripts": {
+    "build": "rbxtsc",
+    "watch": "rbxtsc -w",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "Cryptography",
@@ -17,21 +33,12 @@
   ],
   "author": "Luc Rodriguez <luc.rodriguez@seemless.gg> (https://github.com/Shambi-0)",
   "license": "ECL-2.0",
-  "homepage": "https://github.com/Shambi-0/crypto#readme",
-  "devDependencies": {
-    "@rbxts/compiler-types": "^2.0.4-types.1",
-    "@rbxts/types": "^1.0.654"
-  },
+  "types": "out/index.d.ts",
   "files": [
-    "crypto/index.lua",
-    "crypto/index.d.ts"
+    "out",
+    "!**/*.tsbuildinfo"
   ],
-  "release": {
-    "branches": [
-      "main"
-    ]
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\""
+  "publishConfig": {
+    "access": "public"
   }
 }

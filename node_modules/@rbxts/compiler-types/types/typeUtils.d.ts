@@ -44,7 +44,7 @@ type ExcludeKeys<T, U> = { [K in keyof T]: T[K] extends U ? never : K }[keyof T]
 type ExcludeMembers<T, U> = Pick<T, ExcludeKeys<T, U>>;
 
 /** Exclude null and undefined from T */
-type NonNullable<T> = unknown extends T ? defined : T extends null | undefined ? never : T;
+type NonNullable<T> = T & {};
 
 /** Obtain the parameters of a function type in a `tuple | never`. */
 type Parameters<T> = T extends (...args: infer P) => any ? P : never;

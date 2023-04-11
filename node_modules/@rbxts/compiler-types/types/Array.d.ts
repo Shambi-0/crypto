@@ -123,7 +123,7 @@ interface ReadonlyArray<T> extends ArrayLike<T>, Iterable<T> {
 	/**
 	 * Removes all undefined values from the array safely
 	 */
-	filterUndefined(this: undefined extends T ? ReadonlyArray<T> : never): Array<NonNullable<T>>;
+	filterUndefined(this: ReadonlyArray<T>): Array<NonNullable<T>>;
 
 	/**
 	 * Returns the elements of an array that meet the condition specified in a callback function.
