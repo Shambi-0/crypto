@@ -1,26 +1,40 @@
 {
-	"name": "@rbxts/crypto",
-	"version": "1.0.0",
-	"description": "An Open-Source Cryptography library for Roblox.",
-	"main": "crypto/index.lua",
-	"types": "crypto/index.d.ts",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Shambi-0/crypto.git"
-	},
-	"keywords": [ "Cryptography", "Typescript", "Lua", "@rbxts" ],
-	"author": "Luc Rodriguez <luc.rodriguez@seemless.gg> (https://github.com/Shambi-0)",
-	"license": "ECL-2.0",
-	"bugs": {
-		"url": "https://github.com/Shambi-0/crypto/issues"
-	},
-	"homepage": "https://github.com/Shambi-0/crypto#readme",
-	"devDependencies": {
-		"@rbxts/compiler-types": "^2.0.4-types.1",
-		"@rbxts/types": "^1.0.654"
-	},
-	"files": [
-		"crypto/index.lua",
-		"crypto/index.d.ts"
-	]
+  "name": "@rbxts/crypto",
+  "version": "0.0.0",
+  "private": true,
+  "description": "An Open-Source Cryptography library for Roblox.",
+  "main": "crypto/index.lua",
+  "types": "crypto/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shambi-0/crypto.git"
+  },
+  "keywords": [
+    "Cryptography",
+    "Typescript",
+    "Lua",
+    "@rbxts"
+  ],
+  "author": "Luc Rodriguez <luc.rodriguez@seemless.gg> (https://github.com/Shambi-0)",
+  "license": "ECL-2.0",
+  "homepage": "https://github.com/Shambi-0/crypto#readme",
+  "devDependencies": {
+    "@rbxts/compiler-types": "^2.0.4-types.1",
+    "@rbxts/types": "^1.0.654"
+  },
+  "files": [
+    "crypto/index.lua",
+    "crypto/index.d.ts"
+  ],
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  }
 }
