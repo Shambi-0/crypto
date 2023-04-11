@@ -23,7 +23,8 @@
   "scripts": {
     "build": "rbxtsc",
     "watch": "rbxtsc -w",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\""
   },
   "keywords": [
     "Cryptography",
