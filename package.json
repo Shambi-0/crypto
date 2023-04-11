@@ -40,10 +40,6 @@
     "out",
     "!**/*.tsbuildinfo"
   ],
-  "publishConfig": {
-    "access": "public",
-    "@rbxts:registry": "https://npm.pkg.github.com"
-  },
   "bugs": {
     "url": "https://github.com/Shambi-0/crypto/issues"
   },
