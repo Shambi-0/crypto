@@ -1,7 +1,6 @@
 {
   "name": "@rbxts/crypto",
   "version": "1.0.0",
-  "private": true,
   "description": "An Open-Source Cryptography library for Roblox.",
   "main": "crypto/index.lua",
   "types": "crypto/index.d.ts",
