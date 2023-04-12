@@ -1,7 +1,7 @@
 {
   "name": "@rbxts/crypto",
   "version": "1.1.5",
-  "description": "[![ECL-2.0 License](https://img.shields.io/npm/l/@rbxts/crypto?label=License)](https://choosealicense.com/licenses/ecl-2.0/)",
+  "description": "An Open-Source Cryptography library for Roblox.",
   "main": "out/index.lua",
   "homepage": "https://github.com/Shambi-0/crypto/blob/main/README.md",
   "repository": {
