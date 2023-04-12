@@ -1,7 +1,5 @@
 /// <reference types="@rbxts/types"/>
 
-import Sha256 from "./Modules/Sha256";
-
 interface KeyPair {
     Public: string,
     Secret: string
