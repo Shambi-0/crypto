@@ -22,7 +22,7 @@ local Permutations = table.freeze({
 local function ProcessNumber(Input, Length)
 	local Output = ""
 
-	for Index = 1, Length do
+	for _ = 1, Length do
 		local Remainder = bit32.band(Input, 255)
 
 		Output ..= string.char(Remainder)
@@ -83,7 +83,7 @@ end
 
 return function(Content, Salt)
 	assert(type(Content) == "string", "Argument #1 must be type\"string\".")
-    
+
 	Content ..= if type(Salt) == "string" then "_" .. Salt else ""
 	Content = PreProcess(Content, #Content)
 

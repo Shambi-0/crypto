@@ -1,36 +1,6 @@
---[[::
-
-Copyright (C) 2022, Luc Rodriguez (Aliases : Shambi, StyledDev).
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
---::]]
-
------------------------
---// Initalization //--
------------------------
+---@diagnostic disable: redefined-local
 
 local Module, Generator = {}, Random.new(tick())
-
-------------------
---// Datasets //--
-------------------
 
 local GF8x2, GF8x3, GF8x9, GF8x11, GF8x13, GF8x14, SBox, InverseSBox, KeySchedule = unpack({
 	{[0]=
@@ -207,10 +177,6 @@ local GF8x2, GF8x3, GF8x9, GF8x11, GF8x13, GF8x14, SBox, InverseSBox, KeySchedul
 	}
 })
 
------------------------------
---// Arthmetic Functions //--
------------------------------
-
 local function AddRoundKey(State, Key)
 	for Index, Byte in State do
 		State[Index] = bit32.bxor(Byte, Key[Index])
@@ -249,10 +215,6 @@ local function MixColumns(State)
 	end
 end
 
--------------------
---// Functions //--
--------------------
-
 local function ElectronicCodebook(Method, Key, OriginalText)
 	local Expanded, RoundKeys, Text = {}, {}, ""
 
@@ -272,8 +234,8 @@ local function ElectronicCodebook(Method, Key, OriginalText)
 		First, Second, Third, Fourth = bit32.bxor(KeySchedule[Index], SBox[Second]), SBox[Third], SBox[Fourth], SBox[First]
 		Index += 1
 
-		for Index = 1, 8 do
-			if Index == 5 then
+		for _Index = 1, 8 do
+			if _Index == 5 then
 				First, Second, Third, Fourth = SBox[First], SBox[Second], SBox[Third], SBox[Fourth]
 			end
 
@@ -305,15 +267,15 @@ local function ElectronicCodebook(Method, Key, OriginalText)
 		RoundKeys[Round] = RoundKey
 	end
 
-	for Chunk, State in function(Text, PrimaryIndex)
-			local First = PrimaryIndex * 16 + 1
+	for _, State in function(_Text, PrimaryIndex)
+			local _First = PrimaryIndex * 16 + 1
 
-			if First > #Text then
+			if _First > #_Text then
 				return
 			end
 
 			PrimaryIndex += 1
-			local Chunk = { string.byte(Text, First, First + 15) }
+			local Chunk = { string.byte(_Text, _First, _First + 15) }
 
 			for SecondaryIndex = #Chunk + 1, 16 do
 				Chunk[SecondaryIndex] = 0
@@ -328,10 +290,6 @@ local function ElectronicCodebook(Method, Key, OriginalText)
 
 	return Text
 end
-
------------------
---// Methods //--
------------------
 
 function Module:GenerateKey() : string
 	return string.gsub(string.rep("\0", 64), ".", function()
@@ -384,9 +342,5 @@ function Module:Decrypt(Data : string, Key : string) : string
 		AddRoundKey(State, RoundKeys[0])
 	end, tonumber(Key, 16), Data)
 end
-
-----------------------
---// Finalization //--
-----------------------
 
 return Module
