@@ -6,7 +6,7 @@ interface KeyPair {
 }
 
 declare namespace EC25519 {
-    function GenerateKeyPair(): KeyPair;
+    function GenerateKeyPair(): Readonly<KeyPair>;
     function GenerateSessionKey(Sender: string, Recipient: string): string;
 }
 
