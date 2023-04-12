@@ -1,5 +1,7 @@
 /// <reference types="@rbxts/types"/>
 
+import Sha256 from "./Modules/Sha256";
+
 interface KeyPair {
     Public: string,
     Secret: string
@@ -16,4 +18,11 @@ declare namespace AES {
     function Decrypt(Data: string, Key: string): string;
 }
 
-export { Curve25519, AES };
+declare namespace Base64 {
+    function Encode(Data: string): string;
+    function Decode(Data: string): string;
+}
+
+declare function Sha256(Data: string, Salt?: string): string;
+
+export { Curve25519, AES, Base64, Sha256 };
