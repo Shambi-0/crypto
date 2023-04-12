@@ -1,0 +1,1 @@
+export default function Sha256(Data: string, Salt?: string): string
