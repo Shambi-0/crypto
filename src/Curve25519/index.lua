@@ -60,10 +60,10 @@ function Curve25519.GenerateKeyPair()
 
 	EllipticCurve25519.ScalarMultiplicationBase(Public, Secret)
 
-	return {
+	return table.freeze({
 		["Secret"] = Package(Secret),
 		["Public"] = Package(Public)
-	}
+	})
 end
 
 function Curve25519.GenerateSessionKey(Sender, Recipient)
