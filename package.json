@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/crypto",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "[![ECL-2.0 License](https://img.shields.io/npm/l/@rbxts/crypto?label=License)](https://choosealicense.com/licenses/ecl-2.0/)",
   "main": "out/index.lua",
   "homepage": "https://github.com/Shambi-0/crypto#readme",
