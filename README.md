@@ -12,7 +12,7 @@ An *Open-Source* Cryptography library for *Roblox*, Including functionality for 
 Install **@rbxts/crypto** with npm
 
 ```shell
-  npm install @rbxts/crypto
+  npm i @rbxts/crypto
 ```
     
 ## ✒️ Authors
