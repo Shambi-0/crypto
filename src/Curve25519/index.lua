@@ -55,7 +55,7 @@ end
 --// Methods //--
 -----------------
 
-function Curve25519:GenerateKeyPair()
+function Curve25519.GenerateKeyPair()
 	local Secret, Public = GenerateKey(), {}
 
 	EllipticCurve25519.ScalarMultiplicationBase(Public, Secret)
@@ -66,7 +66,7 @@ function Curve25519:GenerateKeyPair()
 	}
 end
 
-function Curve25519:GenerateSessionKey(Sender, Recipient)
+function Curve25519.GenerateSessionKey(Sender, Recipient)
 	local SessionKey = {}
 
 	EllipticCurve25519.ScalarMultiplication(SessionKey, Unpackage(Sender), Unpackage(Recipient))

@@ -291,13 +291,13 @@ local function ElectronicCodebook(Method, Key, OriginalText)
 	return Text
 end
 
-function Module:GenerateKey() : string
+function Module.GenerateKey() : string
 	return string.gsub(string.rep("\0", 64), ".", function()
 		return string.format("%02x", Generator:NextInteger(0, 255))
 	end)
 end
 
-function Module:Encrypt(Data : string, Key : string) : string
+function Module.Encrypt(Data : string, Key : string) : string
 	return ElectronicCodebook(function(State, RoundKeys)
 		AddRoundKey(State, RoundKeys[0])
 
@@ -315,7 +315,7 @@ function Module:Encrypt(Data : string, Key : string) : string
 	end, tonumber(Key, 16), Data)
 end
 
-function Module:Decrypt(Data : string, Key : string) : string
+function Module.Decrypt(Data : string, Key : string) : string
 	return ElectronicCodebook(function(State, RoundKeys)
 
 		AddRoundKey(State, RoundKeys[14])
