@@ -7,7 +7,7 @@ function ToBinary(Input)
 
 	local Output, Index = {}, 1
 
-	while (Input > 0) do
+	while Input > 0 do
 		local Remainder = Input % 2
 
 		Output[Index] = if Remainder == 1 then 1 else 0
