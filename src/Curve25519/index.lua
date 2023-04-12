@@ -8,7 +8,7 @@ local Curve25519 = {}
 --// Libraries //--
 -------------------
 
-local EllipticCurve25519 = require(script:WaitForChild("EllipticCurve25519"))
+local EllipticCurve25519 = require(script.Parent:WaitForChild("EllipticCurve25519"):WaitForChild("index"))
 
 -------------------
 --// Variables //--
@@ -44,7 +44,7 @@ end
 local function Unpackage(Input)
 	local Output = {}
 
-	string.gsub(Input, "..", function(Character)
+	local _ = string.gsub(Input, "..", function(Character)
 		table.insert(Output, tonumber(Character, 16))
 	end)
 

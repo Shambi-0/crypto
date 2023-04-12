@@ -5,7 +5,7 @@ interface KeyPair {
     Secret: string
 }
 
-declare namespace Curve25519 {
+declare namespace EC25519 {
     function GenerateKeyPair(): KeyPair;
     function GenerateSessionKey(Sender: string, Recipient: string): string;
 }
@@ -23,4 +23,4 @@ declare namespace Base64 {
 
 declare function Sha256(Data: string, Salt?: string): string;
 
-export { Curve25519, AES, Base64, Sha256 };
+export { EC25519, AES, Base64, Sha256 };

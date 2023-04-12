@@ -1,4 +1,4 @@
-local Operations = require(script:WaitForChild("Operations"))
+local Operations = require(script.Parent:WaitForChild("Operations"))
 
 local Origin = { 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 local Curve = {0xDB41, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -193,8 +193,12 @@ local function CryptographicScalarMultiplication(Output, n, p) -- out q[], in n[
 	end
 	
 	for Index = 1, #x do
-		if Index > 16 then x16[Index - 16] = x[Index] end
-		if Index > 32 then x32[Index - 32] = x[Index] end
+		if Index > 16 then
+			x16[Index - 16] = x[Index]
+		end
+		if Index > 32 then
+			x32[Index - 32] = x[Index]
+		end
 	end
 
 	Inverse25519(x32, x32)

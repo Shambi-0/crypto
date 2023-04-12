@@ -34,7 +34,9 @@ function Operation(X, Y, Callback)
 	local Output, J, K = {}, {}, {}
 
 	if #Z > #W then
-		J, K = Z, W else J, K = W, Z
+		J, K = Z, W
+	else
+		J, K = W, Z
 	end
 
 	for Index = #K + 1, #J do
