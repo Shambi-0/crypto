@@ -22,7 +22,7 @@ local Modules = {
 
     -- Hashing
     ["Sha256"] = Get("Hashing", "Sha256");
-    ["Crc32"] = Get("Hashing", "Crc32");
+    ["Crc32"] = Get("Hashing", "Crc32").default;
 }
 
 for _, Library in Modules do
