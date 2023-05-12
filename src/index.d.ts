@@ -22,5 +22,6 @@ declare namespace Base64 {
 }
 
 declare function Sha256(Data: string, Salt?: string): string;
+declare function Crc32(Data: string): number;
 
-export { EC25519, AES, Base64, Sha256 };
+export { EC25519, AES, Base64, Sha256, Crc32 };
